@@ -1,68 +1,68 @@
-<x-app-layout>
-    <div class="py-12 px-4 bg-base-200 min-h-screen">
-        <div class="max-w-7xl mx-auto">
-            <div class="mb-10">
-                <h1 class="text-4xl font-bold text-base-content">Semua Layanan</h1>
-                <p class="mt-2 text-base-content/60">Temukan layanan kebersihan yang sesuai dengan kebutuhan Anda</p>
-            </div>
+<x-guest-public-layout>
+    <x-slot:title>Semua Layanan — BersihinAja</x-slot:title>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                @forelse ($services as $service)
-                    <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
-                        @if($service->image)
-                            <figure class="h-52 overflow-hidden">
-                                <img src="{{ asset('storage/' . $service->image) }}" alt="{{ $service->name }}" class="w-full h-full object-cover" />
-                            </figure>
-                        @else
-                            <figure class="h-52 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 text-primary/30" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
-                            </figure>
-                        @endif
-                        <div class="card-body">
-                            <h2 class="card-title text-base-content">{{ $service->name }}</h2>
-                            <p class="text-base-content/60 text-sm line-clamp-2">{{ $service->description }}</p>
-
-                            <div class="flex flex-wrap gap-2 my-3">
-                                <div class="badge badge-primary badge-outline gap-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4" /></svg>
-                                    {{ $service->room_size }}
-                                </div>
-                                <div class="badge badge-accent badge-outline gap-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                    {{ $service->estimation }}
-                                </div>
-                                <div class="badge badge-neutral gap-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                                    {{ $service->cleaners_required }} pekerja
-                                </div>
-                            </div>
-
-                            @if($service->packages->count() > 0)
-                                <div class="text-xs text-base-content/40">
-                                    {{ $service->packages->count() }} paket tambahan tersedia
-                                </div>
-                            @endif
-
-                            <div class="divider my-1"></div>
-
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <span class="text-xs text-base-content/40">Mulai dari</span>
-                                    <p class="text-xl font-bold text-primary">Rp {{ number_format($service->price, 0, ',', '.') }}</p>
-                                </div>
-                                <a href="{{ route('services.show', $service->slug) }}" class="btn btn-primary btn-sm">Detail</a>
-                            </div>
-                        </div>
-                    </div>
-                @empty
-                    <div class="col-span-full">
-                        <div class="alert alert-info">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            <span>Belum ada layanan tersedia saat ini.</span>
-                        </div>
-                    </div>
-                @endforelse
+    {{-- Hero Banner --}}
+    <section class="px-6 pb-16 pt-32 lg:px-12">
+        <div class="mx-auto max-w-[1344px]">
+            <div class="reveal">
+                <p class="text-[10px] font-black tracking-[0.4em] text-mint">// LAYANAN KAMI</p>
+                <h1 class="mt-5 text-5xl font-black leading-[0.85] tracking-tighter sm:text-7xl lg:text-8xl">Semua<br>Layanan</h1>
+                <p class="mt-6 max-w-lg text-lg font-medium text-charcoal/60">Temukan layanan kebersihan yang sesuai dengan kebutuhan Anda</p>
             </div>
         </div>
-    </div>
-</x-app-layout>
+    </section>
+
+    {{-- Services Grid --}}
+    <section class="bg-cream-alt px-6 py-24 lg:px-12 lg:py-32">
+        <div class="mx-auto max-w-[1344px]">
+            @if($services->count() > 0)
+                <div class="grid border border-charcoal/10 md:grid-cols-3 reveal">
+                    @php
+                        $icons = ['lucide:spray-can', 'lucide:brush-cleaning', 'lucide:paintbrush'];
+                    @endphp
+                    @foreach ($services as $index => $service)
+                    <article class="group flex min-h-[480px] flex-col {{ !$loop->last ? 'border-b border-charcoal/10 md:border-b-0 md:border-r' : '' }} bg-cream p-8 ease-premium hover:bg-mint lg:p-10">
+                        <iconify-icon icon="{{ $icons[$index] ?? 'lucide:sparkles' }}" class="text-5xl text-mint ease-premium group-hover:text-charcoal"></iconify-icon>
+                        <h3 class="mt-10 text-3xl font-black uppercase tracking-tighter">{{ $service->name }}</h3>
+                        <p class="mt-4 text-sm font-medium leading-relaxed text-charcoal/70">{{ $service->description }}</p>
+                        
+                        <div class="mt-6 flex flex-wrap gap-3">
+                            <span class="inline-flex items-center gap-1 text-[10px] font-black tracking-[0.15em] text-charcoal/50">
+                                <iconify-icon icon="lucide:home" class="text-sm text-mint ease-premium group-hover:text-charcoal"></iconify-icon>
+                                {{ $service->room_size }}
+                            </span>
+                            <span class="inline-flex items-center gap-1 text-[10px] font-black tracking-[0.15em] text-charcoal/50">
+                                <iconify-icon icon="lucide:clock" class="text-sm text-mint ease-premium group-hover:text-charcoal"></iconify-icon>
+                                {{ $service->estimation }}
+                            </span>
+                            <span class="inline-flex items-center gap-1 text-[10px] font-black tracking-[0.15em] text-charcoal/50">
+                                <iconify-icon icon="lucide:users" class="text-sm text-mint ease-premium group-hover:text-charcoal"></iconify-icon>
+                                {{ $service->cleaners_required }} pekerja
+                            </span>
+                        </div>
+
+                        @if($service->packages->count() > 0)
+                            <p class="mt-3 text-[10px] font-bold text-charcoal/40">{{ $service->packages->count() }} paket tambahan tersedia</p>
+                        @endif
+
+                        <div class="mt-auto pt-8">
+                            <div class="flex items-start">
+                                <span class="mt-2 text-[10px] font-black tracking-[0.2em]">Rp</span>
+                                <span class="text-5xl font-black tracking-tighter">{{ number_format($service->price, 0, ',', '.') }}</span>
+                            </div>
+                            <a href="{{ route('services.show', $service->slug) }}" class="mt-5 inline-flex items-center border-b-2 border-charcoal pb-1 text-xs font-black uppercase tracking-widest ease-premium group-hover:border-charcoal">
+                                Lihat Detail <iconify-icon icon="lucide:arrow-up-right" class="ml-2 text-base"></iconify-icon>
+                            </a>
+                        </div>
+                    </article>
+                    @endforeach
+                </div>
+            @else
+                <div class="rounded-2xl border border-charcoal/10 bg-cream p-12 text-center reveal">
+                    <iconify-icon icon="lucide:info" class="text-4xl text-mint"></iconify-icon>
+                    <p class="mt-4 text-lg font-medium text-charcoal/60">Belum ada layanan tersedia saat ini.</p>
+                </div>
+            @endif
+        </div>
+    </section>
+</x-guest-public-layout>

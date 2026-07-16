@@ -1,111 +1,138 @@
-<x-app-layout>
-    <div class="py-12 px-4 bg-base-200 min-h-screen">
-        <div class="max-w-5xl mx-auto">
+<x-guest-public-layout>
+    <x-slot:title>{{ $service->name }} — BersihinAja</x-slot:title>
+
+    {{-- Breadcrumb + Hero --}}
+    <section class="px-6 pb-12 pt-28 lg:px-12">
+        <div class="mx-auto max-w-[1100px]">
             {{-- Breadcrumb --}}
-            <div class="text-sm breadcrumbs mb-6">
-                <ul>
-                    <li><a href="{{ route('home') }}">Beranda</a></li>
-                    <li><a href="{{ route('services.index') }}">Layanan</a></li>
-                    <li class="text-base-content/60">{{ $service->name }}</li>
-                </ul>
-            </div>
+            <nav class="mb-10 flex items-center gap-2 text-[10px] font-bold tracking-[0.15em] text-charcoal/40 reveal">
+                <a href="{{ route('home') }}" class="ease-premium hover:text-mint">BERANDA</a>
+                <iconify-icon icon="lucide:chevron-right" class="text-sm"></iconify-icon>
+                <a href="{{ route('services.index') }}" class="ease-premium hover:text-mint">LAYANAN</a>
+                <iconify-icon icon="lucide:chevron-right" class="text-sm"></iconify-icon>
+                <span class="text-charcoal">{{ strtoupper($service->name) }}</span>
+            </nav>
 
-            {{-- Service Detail Card --}}
-            <div class="card bg-base-100 shadow-xl">
-                <div class="card-body">
-                    <div class="flex flex-col lg:flex-row gap-8">
-                        {{-- Image --}}
-                        <div class="lg:w-1/3">
-                            @if($service->image)
-                                <img src="{{ asset('storage/' . $service->image) }}" alt="{{ $service->name }}" class="rounded-xl w-full h-64 object-cover" />
-                            @else
-                                <div class="rounded-xl w-full h-64 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 text-primary/30" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4" /></svg>
-                                </div>
-                            @endif
-                        </div>
-
-                        {{-- Info --}}
-                        <div class="lg:w-2/3">
-                            <h1 class="text-3xl font-bold text-base-content mb-4">{{ $service->name }}</h1>
-                            <p class="text-base-content/70 mb-6">{{ $service->description }}</p>
-
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                                <div class="stat bg-base-200 rounded-lg p-4">
-                                    <div class="stat-title text-xs">Harga</div>
-                                    <div class="stat-value text-lg text-primary">Rp {{ number_format($service->price, 0, ',', '.') }}</div>
-                                </div>
-                                <div class="stat bg-base-200 rounded-lg p-4">
-                                    <div class="stat-title text-xs">Ukuran Ruangan</div>
-                                    <div class="stat-value text-lg">{{ $service->room_size }}</div>
-                                </div>
-                                <div class="stat bg-base-200 rounded-lg p-4">
-                                    <div class="stat-title text-xs">Estimasi</div>
-                                    <div class="stat-value text-lg">{{ $service->estimation }}</div>
-                                </div>
-                                <div class="stat bg-base-200 rounded-lg p-4">
-                                    <div class="stat-title text-xs">Maks. Jam</div>
-                                    <div class="stat-value text-lg">{{ $service->max_hours }} jam</div>
-                                </div>
+            {{-- Service Header --}}
+            <div class="grid gap-10 lg:grid-cols-12 reveal">
+                {{-- Image --}}
+                <div class="lg:col-span-5">
+                    <div class="group relative aspect-[4/5] overflow-hidden rounded-3xl bg-cream-alt">
+                        @if($service->image)
+                            <img src="{{ asset('storage/' . $service->image) }}" alt="{{ $service->name }}" class="h-full w-full object-cover grayscale ease-premium group-hover:scale-[1.08] group-hover:grayscale-0">
+                        @else
+                            <div class="flex h-full w-full items-center justify-center">
+                                <iconify-icon icon="lucide:sparkles" class="text-8xl text-mint/30"></iconify-icon>
                             </div>
-                        </div>
+                        @endif
                     </div>
+                </div>
 
-                    {{-- Packages --}}
-                    @if($service->packages->count() > 0)
-                        <div class="divider">Paket Tambahan</div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            @foreach($service->packages as $package)
-                                <div class="card card-compact bg-base-200">
-                                    <div class="card-body">
-                                        <h3 class="card-title text-sm">{{ $package->name }}</h3>
-                                        <p class="text-xs text-base-content/60">{{ $package->description }}</p>
-                                        <div class="text-primary font-bold">+ Rp {{ number_format($package->price, 0, ',', '.') }}</div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    @endif
+                {{-- Info --}}
+                <div class="lg:col-span-7">
+                    <p class="text-[10px] font-black tracking-[0.4em] text-mint">// DETAIL LAYANAN</p>
+                    <h1 class="mt-4 text-5xl font-black tracking-tighter sm:text-6xl">{{ $service->name }}</h1>
+                    <p class="mt-6 text-lg font-medium leading-relaxed text-charcoal/70">{{ $service->description }}</p>
 
-                    {{-- Region Selection & Order CTA --}}
-                    <div class="divider">Pilih Lokasi Anda</div>
-                    <div x-data="regionSelector()">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="form-control">
-                                <label class="label"><span class="label-text">Provinsi</span></label>
-                                <select class="select select-bordered" x-model="selectedProvince" @change="fetchRegencies()">
-                                    <option value="" disabled selected>Pilih Provinsi</option>
-                                    @foreach($provinces as $province)
-                                        <option value="{{ $province['id'] }}">{{ $province['name'] }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="form-control">
-                                <label class="label"><span class="label-text">Kabupaten / Kota</span></label>
-                                <select class="select select-bordered" x-model="selectedRegency" :disabled="regencies.length === 0">
-                                    <option value="" disabled selected>Pilih Kabupaten/Kota</option>
-                                    <template x-for="regency in regencies" :key="regency.id">
-                                        <option :value="regency.id" x-text="regency.name"></option>
-                                    </template>
-                                </select>
+                    {{-- Stats Grid --}}
+                    <div class="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4">
+                        <div class="rounded-2xl bg-cream-alt p-5">
+                            <p class="text-[10px] font-black tracking-[0.2em] text-charcoal/40">HARGA</p>
+                            <div class="mt-2 flex items-start">
+                                <span class="mt-1 text-[10px] font-black tracking-[0.1em]">Rp</span>
+                                <span class="text-2xl font-black tracking-tighter text-mint">{{ number_format($service->price, 0, ',', '.') }}</span>
                             </div>
                         </div>
-
-                        <div class="card-actions justify-end mt-6">
-                            @auth
-                                <a x-bind:href="orderUrl" class="btn btn-primary btn-lg" :class="{ 'btn-disabled': !selectedRegency }">
-                                    Pesan Sekarang
-                                </a>
-                            @else
-                                <a href="{{ route('login') }}" class="btn btn-primary btn-lg">Login untuk Memesan</a>
-                            @endauth
+                        <div class="rounded-2xl bg-cream-alt p-5">
+                            <p class="text-[10px] font-black tracking-[0.2em] text-charcoal/40">RUANGAN</p>
+                            <p class="mt-2 text-2xl font-black tracking-tighter">{{ $service->room_size }}</p>
+                        </div>
+                        <div class="rounded-2xl bg-cream-alt p-5">
+                            <p class="text-[10px] font-black tracking-[0.2em] text-charcoal/40">ESTIMASI</p>
+                            <p class="mt-2 text-2xl font-black tracking-tighter">{{ $service->estimation }}</p>
+                        </div>
+                        <div class="rounded-2xl bg-cream-alt p-5">
+                            <p class="text-[10px] font-black tracking-[0.2em] text-charcoal/40">MAKS. JAM</p>
+                            <p class="mt-2 text-2xl font-black tracking-tighter">{{ $service->max_hours }} jam</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
+    {{-- Packages --}}
+    @if($service->packages->count() > 0)
+    <section class="bg-cream-alt px-6 py-16 lg:px-12">
+        <div class="mx-auto max-w-[1100px]">
+            <div class="reveal">
+                <p class="text-[10px] font-black tracking-[0.4em] text-mint">// PAKET TAMBAHAN</p>
+                <h2 class="mt-4 text-3xl font-black tracking-tighter sm:text-4xl">Tingkatkan Layanan</h2>
+            </div>
+            <div class="mt-10 grid gap-5 sm:grid-cols-2 reveal">
+                @php
+                    $pkgIcons = ['lucide:armchair', 'lucide:heater', 'lucide:trees', 'lucide:leaf'];
+                @endphp
+                @foreach($service->packages as $i => $package)
+                <article class="flex items-start gap-5 border-l-4 border-transparent bg-cream p-6 shadow-sm ease-premium hover:-translate-y-1 hover:border-mint">
+                    <iconify-icon icon="{{ $pkgIcons[$i] ?? 'lucide:package' }}" class="mt-1 text-2xl text-mint"></iconify-icon>
+                    <div>
+                        <h3 class="text-lg font-black">{{ $package->name }}</h3>
+                        <p class="mt-1 text-sm text-charcoal/60">{{ $package->description }}</p>
+                        <p class="mt-3 text-lg font-black text-mint">+ Rp{{ number_format($package->price, 0, ',', '.') }}</p>
+                    </div>
+                </article>
+                @endforeach
+            </div>
+        </div>
+    </section>
+    @endif
+
+    {{-- Region Selection & Order CTA --}}
+    <section class="px-6 py-16 lg:px-12">
+        <div class="mx-auto max-w-[1100px]">
+            <div class="reveal">
+                <p class="text-[10px] font-black tracking-[0.4em] text-mint">// PESAN SEKARANG</p>
+                <h2 class="mt-4 text-3xl font-black tracking-tighter sm:text-4xl">Pilih Lokasi Anda</h2>
+            </div>
+            <div class="mt-10 rounded-3xl bg-cream-alt p-8 lg:p-12 reveal" x-data="regionSelector()">
+                <div class="grid gap-6 md:grid-cols-2">
+                    <div>
+                        <label class="mb-2 block text-[10px] font-black tracking-[0.2em] text-charcoal/50">PROVINSI</label>
+                        <select class="w-full rounded-xl border border-charcoal/10 bg-cream px-5 py-4 text-sm font-bold text-charcoal outline-none ease-premium focus:border-mint focus:ring-2 focus:ring-mint/20" x-model="selectedProvince" @change="fetchRegencies()">
+                            <option value="" disabled selected>Pilih Provinsi</option>
+                            @foreach($provinces as $province)
+                                <option value="{{ $province['id'] }}">{{ $province['name'] }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label class="mb-2 block text-[10px] font-black tracking-[0.2em] text-charcoal/50">KABUPATEN / KOTA</label>
+                        <select class="w-full rounded-xl border border-charcoal/10 bg-cream px-5 py-4 text-sm font-bold text-charcoal outline-none ease-premium focus:border-mint focus:ring-2 focus:ring-mint/20" x-model="selectedRegency" :disabled="regencies.length === 0">
+                            <option value="" disabled selected>Pilih Kabupaten/Kota</option>
+                            <template x-for="regency in regencies" :key="regency.id">
+                                <option :value="regency.id" x-text="regency.name"></option>
+                            </template>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mt-10 flex justify-end">
+                    @auth
+                        <a x-bind:href="orderUrl" class="inline-flex items-center gap-2 rounded-full bg-mint px-10 py-4 text-sm font-black uppercase tracking-wide text-charcoal ease-premium hover:bg-purple hover:text-white" :class="{ 'pointer-events-none opacity-40': !selectedRegency }">
+                            Pesan Sekarang <iconify-icon icon="lucide:arrow-right" class="text-lg"></iconify-icon>
+                        </a>
+                    @else
+                        <a href="{{ route('login') }}" class="inline-flex items-center gap-2 rounded-full bg-mint px-10 py-4 text-sm font-black uppercase tracking-wide text-charcoal ease-premium hover:bg-purple hover:text-white">
+                            Login untuk Memesan <iconify-icon icon="lucide:log-in" class="text-lg"></iconify-icon>
+                        </a>
+                    @endauth
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @push('scripts')
     <script>
         function regionSelector() {
             return {
@@ -134,4 +161,5 @@
             }
         }
     </script>
-</x-app-layout>
+    @endpush
+</x-guest-public-layout>
