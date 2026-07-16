@@ -8,6 +8,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\Pekerja;
+use App\Http\Controllers\Admin;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
@@ -60,6 +61,16 @@ Route::middleware(['auth', 'role:pekerja'])->prefix('pekerja')->name('pekerja.')
     Route::put('/orders/{order}/complete', [Pekerja\OrderController::class, 'complete'])->name('orders.complete');
     Route::get('/customers', [Pekerja\CustomerController::class, 'index'])->name('customers.index');
     Route::get('/customers/{user}', [Pekerja\CustomerController::class, 'show'])->name('customers.show');
+});
+
+// Admin Dashboard
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [Admin\DashboardController::class, 'index'])->name('dashboard');
+    Route::resource('/services', Admin\ServiceController::class)->except(['show']);
+    Route::get('/users', [Admin\UserController::class, 'index'])->name('users.index');
+    Route::get('/users/{user}', [Admin\UserController::class, 'show'])->name('users.show');
+    Route::get('/orders', [Admin\OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [Admin\OrderController::class, 'show'])->name('orders.show');
 });
 
 require __DIR__.'/auth.php';
