@@ -1,24 +1,55 @@
 <?php
 
-use App\Http\Controllers\Auth\SocialiteController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Auth\SocialiteController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Public routes
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
+Route::get('/services/{service:slug}', [ServiceController::class, 'show'])->name('services.show');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Google OAuth
+Route::get('/auth/google', [SocialiteController::class, 'redirect'])->name('auth.google');
+Route::get('/auth/google/callback', [SocialiteController::class, 'callback']);
 
-Route::middleware('auth')->group(function () {
+// Midtrans webhook (no CSRF, no auth)
+Route::post('/midtrans/webhook', [PaymentController::class, 'handleWebhook'])
+    ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])
+    ->name('midtrans.webhook');
+
+// Authenticated customer routes
+Route::middleware(['auth'])->group(function () {
+    // Orders
+    Route::get('/orders/create/{service:slug}', [OrderController::class, 'create'])->name('orders.create');
+    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+    Route::get('/orders/{order}/confirm', [OrderController::class, 'confirm'])->name('orders.confirm');
+    Route::get('/orders/{order}/receipt', [OrderController::class, 'receipt'])->name('orders.receipt');
+    Route::get('/orders/history', [OrderController::class, 'history'])->name('orders.history');
+
+    // Payment
+    Route::post('/payment/{order}/snap-token', [PaymentController::class, 'getSnapToken'])->name('payment.snap-token');
+
+    // Reviews
+    Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+
+    // Profile (Breeze)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/auth/google', [SocialiteController::class, 'redirect'])->name('auth.google');
-Route::get('/auth/google/callback', [SocialiteController::class, 'callback']);
+// Dashboard redirect
+Route::get('/dashboard', function () {
+    $user = auth()->user();
+    if ($user->hasRole('admin')) return redirect('/admin/dashboard');
+    if ($user->hasRole('pekerja')) return redirect('/pekerja/dashboard');
+    return redirect('/');
+})->middleware(['auth'])->name('dashboard');
 
 require __DIR__.'/auth.php';
