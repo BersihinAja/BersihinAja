@@ -16,9 +16,20 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable(); // nullable for OAuth-only users
+            $table->string('phone', 20)->nullable();
+            $table->text('address')->nullable();
+            $table->string('ktp_number', 20)->nullable();
+            $table->string('avatar')->nullable();
+            $table->string('google_id')->unique()->nullable();
+            $table->string('province_id', 10)->nullable();
+            $table->string('regency_id', 10)->nullable();
+            $table->string('province_name', 100)->nullable();
+            $table->string('regency_name', 100)->nullable();
+            $table->string('status', 20)->default('available');
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
