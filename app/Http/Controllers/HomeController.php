@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Package;
 use App\Models\Service;
 
 class HomeController extends Controller
@@ -9,6 +10,7 @@ class HomeController extends Controller
     public function index()
     {
         $services = Service::all();
-        return view('home', compact('services'));
+        $packages = Package::all();
+        return view('home', compact('services', 'packages'));
     }
 }

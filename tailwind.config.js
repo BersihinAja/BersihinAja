@@ -13,7 +13,26 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Inter', ...defaultTheme.fontFamily.sans],
+                sans: ['League Spartan', ...defaultTheme.fontFamily.sans],
+            },
+            colors: {
+                mint: '#37CDBE',
+                charcoal: '#1D232A',
+                cream: '#FAFCFB',
+                'cream-alt': '#F0F5F3',
+                purple: '#570DF8',
+            },
+            animation: {
+                'bounce-slow': 'bounce-slow 4s ease-in-out infinite',
+            },
+            keyframes: {
+                'bounce-slow': {
+                    '0%, 100%': { transform: 'translateY(-5%)' },
+                    '50%': { transform: 'translateY(5%)' },
+                },
+            },
+            transitionTimingFunction: {
+                'premium': 'cubic-bezier(0.16, 1, 0.3, 1)',
             },
         },
     },
