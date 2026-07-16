@@ -7,6 +7,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\SocialiteController;
+use App\Http\Controllers\Pekerja;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
@@ -51,5 +52,14 @@ Route::get('/dashboard', function () {
     if ($user->hasRole('pekerja')) return redirect('/pekerja/dashboard');
     return redirect('/');
 })->middleware(['auth'])->name('dashboard');
+
+// Pekerja (Worker) Dashboard
+Route::middleware(['auth', 'role:pekerja'])->prefix('pekerja')->name('pekerja.')->group(function () {
+    Route::get('/dashboard', [Pekerja\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/orders', [Pekerja\OrderController::class, 'index'])->name('orders.index');
+    Route::put('/orders/{order}/complete', [Pekerja\OrderController::class, 'complete'])->name('orders.complete');
+    Route::get('/customers', [Pekerja\CustomerController::class, 'index'])->name('customers.index');
+    Route::get('/customers/{user}', [Pekerja\CustomerController::class, 'show'])->name('customers.show');
+});
 
 require __DIR__.'/auth.php';
