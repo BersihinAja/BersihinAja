@@ -66,4 +66,29 @@ class User extends Authenticatable
     {
         return $query->where('regency_id', $regencyId);
     }
+
+    public function getAverageRatingAttribute(): ?float
+    {
+        $ratings = \App\Models\Review::whereIn('order_id', function ($query) {
+            $query->select('order_id')
+                ->from('order_workers')
+                ->where('worker_id', $this->id);
+        })->pluck('rating');
+
+        if ($ratings->isEmpty()) {
+            return null;
+        }
+
+        return round($ratings->average(), 1);
+    }
+
+    public function getReviewCountAttribute(): int
+    {
+        return \App\Models\Review::whereIn('order_id', function ($query) {
+            $query->select('order_id')
+                ->from('order_workers')
+                ->where('worker_id', $this->id);
+        })->count();
+    }
 }
+
