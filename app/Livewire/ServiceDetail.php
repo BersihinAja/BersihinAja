@@ -20,7 +20,7 @@ class ServiceDetail extends Component
     {
         $this->service = $service;
         $this->service->load('packages');
-        $this->provinces = $regionService->getProvinces();
+        $this->provinces = $regionService->getProvinces()->toArray();
     }
 
     public function updatedSelectedProvince($value, RegionService $regionService)
@@ -29,7 +29,7 @@ class ServiceDetail extends Component
         $this->regencies = [];
         
         if ($value) {
-            $this->regencies = $regionService->getRegencies($value);
+            $this->regencies = $regionService->getRegencies($value)->toArray();
         }
     }
 
