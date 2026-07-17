@@ -1,25 +1,25 @@
 # BersihinAja
 
-Platform jasa kebersihan rumah profesional. Pelanggan memesan layanan, admin mengelola dan assign pekerja, pekerja navigasi ke lokasi via Google Maps.
+Professional home cleaning service platform. Customers book cleaning services, admins manage orders and assign workers, workers navigate to customer locations via Google Maps.
 
-Rewrite lengkap dari [proyek asli](https://github.com/kayrinth/BersihinAja) (CodeIgniter 3 + MySQL) ke Laravel 13 + Livewire + PostgreSQL.
+Full rewrite from the [original project](https://github.com/kayrinth/BersihinAja) (CodeIgniter 3 + MySQL) to Laravel 13 + Livewire + PostgreSQL.
 
 ## Tech Stack
 
 **Backend:** Laravel 13, Livewire 4, Spatie Permission, Laravel Socialite, Midtrans PHP SDK, Laravel MCP  
 **Frontend:** Tailwind CSS, DaisyUI, Alpine.js, Vite  
-**Database:** PostgreSQL  
+**Database:** PostgreSQL
 
-## Fitur
+## Features
 
-- Katalog layanan kebersihan dengan paket tambahan
-- Checkout dengan capture GPS koordinat pelanggan
-- Pembayaran via Midtrans (GoPay, OVO, BCA VA, dll)
+- Cleaning service catalog with add-on packages
+- Checkout with GPS coordinate capture
+- Payment via Midtrans (GoPay, OVO, BCA VA, etc.)
 - Google OAuth login
-- Panel admin (kelola layanan, pesanan, user)
-- Panel pekerja (daftar order, navigasi Google Maps ke lokasi)
-- 3 role: admin, pelanggan, pekerja
-- MCP server untuk integrasi AI agent
+- Admin panel (manage services, orders, users)
+- Worker panel (order list, Google Maps navigation to location)
+- 3 roles: admin, customer, worker
+- MCP server for AI agent integration
 
 ## Setup
 
@@ -44,11 +44,11 @@ composer dev
 
 Default admin: `admin@bersihinaja.com` / `password`
 
-## Struktur
+## Structure
 
 ```
 app/
-├── Livewire/          # Full-page components (semua halaman)
+├── Livewire/          # Full-page components (all pages)
 │   ├── Admin/         # Dashboard, ServiceManager, OrderManager, UserManager
 │   ├── Auth/          # Login, Register
 │   ├── Orders/        # CreateOrder, OrderConfirm, OrderHistory, OrderReceipt
@@ -59,8 +59,4 @@ app/
 └── Mcp/               # Laravel MCP server
 ```
 
-Dokumentasi lengkap ada di [`docs/README.md`](docs/README.md).
-
-## Lisensi
-
-MIT
+Full documentation in [`docs/README.md`](docs/README.md).
