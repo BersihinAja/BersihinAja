@@ -26,6 +26,7 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 .superdesign/
-docs/
+docs/*
+!docs/README.md
 
 private/
