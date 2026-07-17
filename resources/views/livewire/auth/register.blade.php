@@ -25,7 +25,7 @@
         {{-- Role --}}
         <div>
             <label for="role" class="block text-[10px] font-black tracking-[0.2em] text-charcoal/50">DAFTAR SEBAGAI</label>
-            <select id="role" wire:model="role" required
+            <select id="role" wire:model.live="role" required
                 class="mt-2 w-full rounded-xl border border-charcoal/10 bg-cream-alt px-5 py-4 text-sm font-bold text-charcoal outline-none ease-premium focus:border-mint focus:ring-2 focus:ring-mint/20">
                 <option value="">Pilih Role</option>
                 <option value="customer">Customer</option>
@@ -33,6 +33,58 @@
             </select>
             <x-input-error :messages="$errors->get('role')" class="mt-2" />
         </div>
+
+        @if ($role === 'pekerja')
+            {{-- Phone --}}
+            <div>
+                <label for="phone" class="block text-[10px] font-black tracking-[0.2em] text-charcoal/50">NOMOR TELEPON / WA</label>
+                <input id="phone" type="text" wire:model="phone" required
+                    class="mt-2 w-full rounded-xl border border-charcoal/10 bg-cream-alt px-5 py-4 text-sm font-bold text-charcoal outline-none ease-premium focus:border-mint focus:ring-2 focus:ring-mint/20">
+                <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+            </div>
+
+            {{-- KTP Number --}}
+            <div>
+                <label for="ktp_number" class="block text-[10px] font-black tracking-[0.2em] text-charcoal/50">NOMOR KTP</label>
+                <input id="ktp_number" type="text" wire:model="ktp_number" required
+                    class="mt-2 w-full rounded-xl border border-charcoal/10 bg-cream-alt px-5 py-4 text-sm font-bold text-charcoal outline-none ease-premium focus:border-mint focus:ring-2 focus:ring-mint/20">
+                <x-input-error :messages="$errors->get('ktp_number')" class="mt-2" />
+            </div>
+
+            {{-- Province --}}
+            <div>
+                <label for="province" class="block text-[10px] font-black tracking-[0.2em] text-charcoal/50">PROVINSI DOMISILI</label>
+                <select id="province" wire:model.live="selectedProvince" required
+                    class="mt-2 w-full rounded-xl border border-charcoal/10 bg-cream-alt px-5 py-4 text-sm font-bold text-charcoal outline-none ease-premium focus:border-mint focus:ring-2 focus:ring-mint/20">
+                    <option value="">Pilih Provinsi</option>
+                    @foreach ($provinces as $prov)
+                        <option value="{{ $prov['id'] }}">{{ $prov['name'] }}</option>
+                    @endforeach
+                </select>
+                <x-input-error :messages="$errors->get('selectedProvince')" class="mt-2" />
+            </div>
+
+            {{-- Regency --}}
+            <div>
+                <label for="regency" class="block text-[10px] font-black tracking-[0.2em] text-charcoal/50">KABUPATEN / KOTA WILAYAH KERJA</label>
+                <select id="regency" wire:model="selectedRegency" required {{ empty($selectedProvince) ? 'disabled' : '' }}
+                    class="mt-2 w-full rounded-xl border border-charcoal/10 bg-cream-alt px-5 py-4 text-sm font-bold text-charcoal outline-none ease-premium focus:border-mint focus:ring-2 focus:ring-mint/20 disabled:opacity-50">
+                    <option value="">Pilih Kabupaten/Kota</option>
+                    @foreach ($regencies as $reg)
+                        <option value="{{ $reg['id'] }}">{{ $reg['name'] }}</option>
+                    @endforeach
+                </select>
+                <x-input-error :messages="$errors->get('selectedRegency')" class="mt-2" />
+            </div>
+
+            {{-- Address --}}
+            <div>
+                <label for="address" class="block text-[10px] font-black tracking-[0.2em] text-charcoal/50">ALAMAT LENGKAP</label>
+                <textarea id="address" wire:model="address" required rows="3"
+                    class="mt-2 w-full rounded-xl border border-charcoal/10 bg-cream-alt px-5 py-4 text-sm font-bold text-charcoal outline-none ease-premium focus:border-mint focus:ring-2 focus:ring-mint/20"></textarea>
+                <x-input-error :messages="$errors->get('address')" class="mt-2" />
+            </div>
+        @endif
 
         {{-- Password --}}
         <div>

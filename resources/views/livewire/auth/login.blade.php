@@ -8,6 +8,12 @@
     {{-- Session Status --}}
     <x-auth-session-status class="mt-4 rounded-xl bg-mint/10 px-4 py-3 text-sm font-medium text-charcoal" :status="session('status')" />
 
+    @if (session()->has('pending_verification'))
+        <div class="mb-4 rounded-xl bg-mint/10 p-4 text-xs font-bold text-mint">
+            {{ session('pending_verification') }}
+        </div>
+    @endif
+
     <form wire:submit="login" class="mt-8 space-y-5">
         {{-- Email --}}
         <div>
