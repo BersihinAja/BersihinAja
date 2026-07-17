@@ -67,6 +67,29 @@
                             </div>
                         </div>
 
+                        @if ($order->workers->isNotEmpty())
+                            @php
+                                $worker = $order->workers->first();
+                            @endphp
+                            <div class="mt-3 flex items-center gap-2 rounded-xl bg-cream-alt p-3 border border-charcoal/5">
+                                <div class="flex h-7 w-7 items-center justify-center rounded-full bg-mint text-[10px] font-black text-charcoal">
+                                    {{ strtoupper(substr($worker->name, 0, 1)) }}
+                                </div>
+                                <div class="text-[10px] font-bold">
+                                    <p class="text-charcoal/40 uppercase tracking-wider text-[8px] font-black">PETUGAS KEBERSIHAN</p>
+                                    <p class="text-charcoal font-black">{{ $worker->name }}</p>
+                                    <p class="text-mint flex items-center gap-0.5 mt-0.5">
+                                        <iconify-icon icon="lucide:star" class="text-xs"></iconify-icon>
+                                        @if ($worker->average_rating)
+                                            <span>{{ $worker->average_rating }} / 5.0 ({{ $worker->review_count }} ulasan)</span>
+                                        @else
+                                            <span class="text-charcoal/40">Baru (Belum ada ulasan)</span>
+                                        @endif
+                                    </p>
+                                </div>
+                            </div>
+                        @endif
+
                         @if($order->review)
                             <div class="mt-4 flex items-center gap-3 border-t border-charcoal/5 pt-4">
                                 <span class="text-[10px] font-black tracking-[0.15em] text-charcoal/40">ULASAN</span>
