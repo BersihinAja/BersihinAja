@@ -1,114 +1,146 @@
-<div>
-    <!-- Page Header -->
-    <div class="mb-10 reveal active">
-        <p class="text-[10px] font-black tracking-[0.4em] text-mint">// PENUGASAN</p>
-        <h1 class="mt-3 text-4xl font-black tracking-tighter">Pesanan Saya</h1>
-        <p class="mt-1 text-sm font-medium text-charcoal/50">Kelola dan selesaikan semua tugas kebersihan Anda</p>
-    </div>
-
-    <!-- Status Tabs -->
-    <div class="mb-8 flex flex-wrap items-center justify-between gap-4 reveal active">
-        <div class="flex items-center gap-1 bg-cream-alt p-1 rounded-2xl border border-charcoal/5">
-            @foreach(['all' => 'Semua', 'in_progress' => 'Sedang Berjalan', 'completed' => 'Selesai', 'cancelled' => 'Dibatalkan'] as $key => $label)
-                <button wire:click="$set('status', '{{ $key }}')" 
-                        class="rounded-xl px-4 py-2 text-[10px] font-black tracking-wider uppercase ease-premium {{ $status === $key ? 'bg-mint text-charcoal' : 'text-charcoal/50 hover:text-charcoal hover:bg-cream' }}">
-                    {{ $label }}
-                </button>
-            @endforeach
+<div class="p-6">
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+            <p class="text-[10px] font-black tracking-[0.4em] text-mint">// PEKERJA</p>
+            <h1 class="mt-2 text-3xl font-black tracking-tighter text-charcoal">Tugas Kebersihan</h1>
         </div>
     </div>
 
-    <!-- Orders Card List -->
-    <div class="rounded-3xl bg-cream-alt p-8 border border-charcoal/5 reveal active">
-        @if($orders->count() > 0)
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="border-b border-charcoal/10 text-[10px] font-black tracking-[0.2em] text-charcoal/40">
-                            <th class="pb-4">NO. PESANAN</th>
-                            <th class="pb-4">PELANGGAN</th>
-                            <th class="pb-4">LAYANAN</th>
-                            <th class="pb-4">PAKET TAMBAHAN</th>
-                            <th class="pb-4">TOTAL GAJI</th>
-                            <th class="pb-4">STATUS</th>
-                            <th class="pb-4 text-right">AKSI</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-charcoal/5 text-sm">
-                        @foreach($orders as $order)
-                            <tr wire:key="order-row-{{ $order->id }}" class="hover:bg-cream/40 ease-premium">
-                                <td class="py-4 font-mono font-bold text-charcoal">{{ $order->order_number }}</td>
-                                <td class="py-4">
-                                    <div class="flex items-center gap-2">
-                                        <div class="flex h-6 w-6 items-center justify-center rounded-full bg-mint/10 text-[9px] font-black text-mint shrink-0">
-                                            {{ strtoupper(substr($order->customer->name ?? '?', 0, 1)) }}
-                                        </div>
-                                        <div class="min-w-0">
-                                            <p class="font-bold text-charcoal/70 truncate">{{ $order->customer->name ?? '-' }}</p>
-                                            <div class="flex items-center gap-1.5 mt-0.5">
-                                                <span class="text-[9px] text-charcoal/40 truncate max-w-[150px]" title="{{ $order->address }}, {{ $order->regency_name }}">{{ $order->address }}</span>
-                                                @php
-                                                    $mapsUrl = ($order->latitude && $order->longitude)
-                                                        ? "https://www.google.com/maps/search/?api=1&query={$order->latitude},{$order->longitude}"
-                                                        : "https://www.google.com/maps/search/?api=1&query=" . urlencode($order->address . ', ' . $order->regency_name);
-                                                @endphp
-                                                <a href="{{ $mapsUrl }}" target="_blank" class="inline-flex items-center gap-0.5 text-[8px] font-black uppercase text-mint hover:underline shrink-0">
-                                                    <iconify-icon icon="lucide:navigation" class="text-[10px]"></iconify-icon> Peta
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="py-4 font-bold text-charcoal/70">{{ $order->service->name ?? '-' }}</td>
-                                <td class="py-4">
-                                    @if($order->packages->count() > 0)
-                                        <div class="flex flex-wrap gap-1.5">
-                                            @foreach($order->packages as $package)
-                                                <span class="inline-flex rounded-full border border-charcoal/10 px-2.5 py-0.5 text-[8px] font-black tracking-wide text-charcoal/60">{{ strtoupper($package->name) }}</span>
-                                            @endforeach
-                                        </div>
-                                    @else
-                                        <span class="text-xs font-bold text-charcoal/20">—</span>
-                                    @endif
-                                </td>
-                                <td class="py-4 font-black">Rp {{ number_format($order->total, 0, ',', '.') }}</td>
-                                <td class="py-4">
-                                    @php
-                                        $statusStyles = match($order->order_status) {
-                                            'pending' => 'bg-[#FBBD23]/10 text-[#FBBD23]',
-                                            'in_progress' => 'bg-mint/10 text-mint',
-                                            'completed' => 'bg-[#36D399]/10 text-[#36D399]',
-                                            'cancelled' => 'bg-[#F87272]/10 text-[#F87272]',
-                                            default => 'bg-charcoal/5 text-charcoal/50',
-                                        };
-                                    @endphp
-                                    <span class="inline-flex rounded-full px-3 py-1 text-[9px] font-black tracking-wide {{ $statusStyles }}">{{ strtoupper(str_replace('_', ' ', $order->order_status)) }}</span>
-                                </td>
-                                <td class="py-4 text-right">
-                                    @if($order->order_status === 'in_progress')
-                                        <button wire:confirm="Yakin ingin menyelesaikan pesanan {{ $order->order_number }}?" 
-                                                wire:click="completeOrder({{ $order->id }})" 
-                                                class="rounded-full bg-[#36D399] px-4 py-2 text-[10px] font-black uppercase tracking-wide text-white ease-premium hover:bg-[#36D399]/80 flex items-center gap-1.5 ml-auto">
-                                            <iconify-icon icon="lucide:check" class="text-sm"></iconify-icon> Selesaikan
-                                        </button>
-                                    @else
-                                        <span class="text-xs font-bold text-charcoal/20">—</span>
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+    {{-- Tabs --}}
+    <div class="mt-6 flex gap-2 border-b border-charcoal/5 pb-px">
+        <button wire:click="$set('tab', 'active')" class="border-b-2 px-4 py-2 text-[10px] font-black tracking-widest uppercase {{ $tab === 'active' ? 'border-mint text-charcoal' : 'border-transparent text-charcoal/40' }}">PESANAN SAYA</button>
+        <button wire:click="$set('tab', 'pool')" class="border-b-2 px-4 py-2 text-[10px] font-black tracking-widest uppercase relative {{ $tab === 'pool' ? 'border-mint text-charcoal' : 'border-transparent text-charcoal/40' }}">
+            POOL PEKERJAAN
+            @php
+                $poolCount = \App\Models\Order::where('order_status', 'pending')->where('payment_status', 'paid')->where('regency_name', Auth::user()->regency_name)->count();
+            @endphp
+            @if ($poolCount > 0)
+                <span class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-mint text-[8px] font-bold text-charcoal">{{ $poolCount }}</span>
+            @endif
+        </button>
+    </div>
 
-            <div class="mt-6">
-                {{ $orders->links() }}
-            </div>
-        @else
-            <div class="text-center py-12">
-                <iconify-icon icon="lucide:clipboard-list" class="text-4xl text-charcoal/20"></iconify-icon>
-                <p class="mt-4 text-sm font-medium text-charcoal/40">Tidak ada pesanan ditemukan</p>
-            </div>
-        @endif
+    @if (session()->has('success'))
+        <div class="mt-6 rounded-xl bg-mint/10 p-4 text-xs font-bold text-mint">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if (session()->has('error'))
+        <div class="mt-6 rounded-xl bg-error/10 p-4 text-xs font-bold text-error">
+            {{ session('error') }}
+        </div>
+    @endif
+
+    {{-- Table --}}
+    <div class="mt-6 overflow-x-auto rounded-2xl border border-charcoal/5 bg-cream">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="border-b border-charcoal/5 text-[9px] font-black tracking-[0.2em] text-charcoal/40 uppercase bg-cream-alt">
+                    <th class="p-4">No. Order</th>
+                    <th class="p-4">Pelanggan</th>
+                    <th class="p-4">Layanan</th>
+                    <th class="p-4">Total</th>
+                    <th class="p-4">Status Kerja</th>
+                    <th class="p-4 text-right">Aksi</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-charcoal/5">
+                @forelse ($orders as $order)
+                    <tr class="hover:bg-cream-alt/40">
+                        <td class="p-4 font-mono font-bold text-charcoal">{{ $order->order_number }}</td>
+                        <td class="p-4">
+                            <div class="flex items-center gap-2">
+                                <div class="flex h-6 w-6 items-center justify-center rounded-full bg-mint/10 text-[9px] font-black text-mint shrink-0">
+                                    {{ strtoupper(substr($order->customer->name ?? '?', 0, 1)) }}
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="font-bold text-charcoal/70 truncate">{{ $order->customer->name ?? '-' }}</p>
+                                    <div class="flex items-center gap-1.5 mt-0.5">
+                                        <span class="text-[9px] text-charcoal/40 truncate max-w-[150px]" title="{{ $order->address }}, {{ $order->regency_name }}">{{ $order->address }}</span>
+                                        @php
+                                            $mapsUrl = ($order->latitude && $order->longitude)
+                                                ? "https://www.google.com/maps/search/?api=1&query={$order->latitude},{$order->longitude}"
+                                                : "https://www.google.com/maps/search/?api=1&query=" . urlencode($order->address . ', ' . $order->regency_name);
+                                        @endphp
+                                        <a href="{{ $mapsUrl }}" target="_blank" class="inline-flex items-center gap-0.5 text-[8px] font-black uppercase text-mint hover:underline shrink-0">
+                                            <iconify-icon icon="lucide:navigation" class="text-[10px]"></iconify-icon> Peta
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="p-4">
+                            <p class="font-bold text-charcoal/70">{{ $order->service->name ?? '-' }}</p>
+                            @if ($order->packages->isNotEmpty())
+                                <span class="text-[8px] font-black uppercase tracking-wider text-charcoal/40">
+                                    + {{ $order->packages->pluck('name')->implode(', ') }}
+                                </span>
+                            @endif
+                        </td>
+                        <td class="p-4 font-mono font-bold text-charcoal">Rp {{ number_format($order->total, 0, ',', '.') }}</td>
+                        <td class="p-4">
+                            @if ($order->order_status === 'pending')
+                                <span class="inline-block rounded bg-charcoal/5 px-2 py-0.5 text-[8px] font-black tracking-wider uppercase text-charcoal/40">Menunggu Pekerja</span>
+                            @elseif ($order->order_status === 'assigned')
+                                <span class="inline-block rounded bg-info/10 px-2 py-0.5 text-[8px] font-black tracking-wider uppercase text-info">Klaim Berhasil</span>
+                            @elseif ($order->order_status === 'on_the_way')
+                                <span class="inline-block rounded bg-warning/10 px-2 py-0.5 text-[8px] font-black tracking-wider uppercase text-warning">Di Perjalanan</span>
+                            @elseif ($order->order_status === 'working')
+                                <span class="inline-block rounded bg-mint/10 px-2 py-0.5 text-[8px] font-black tracking-wider uppercase text-mint">Pembersihan...</span>
+                            @elseif ($order->order_status === 'completed')
+                                <span class="inline-block rounded bg-success/10 px-2 py-0.5 text-[8px] font-black tracking-wider uppercase text-success">Selesai</span>
+                            @else
+                                <span class="inline-block rounded bg-charcoal/10 px-2 py-0.5 text-[8px] font-black tracking-wider uppercase text-charcoal/60">{{ $order->order_status }}</span>
+                            @endif
+                        </td>
+                        <td class="p-4 text-right">
+                            @if ($tab === 'pool')
+                                <button wire:click="claimOrder({{ $order->id }})" class="rounded-full bg-mint px-4 py-2 text-[9px] font-black uppercase tracking-wider text-charcoal ease-premium hover:bg-charcoal hover:text-cream">Klaim</button>
+                            @else
+                                @if ($order->order_status === 'assigned')
+                                    <button wire:click="startTrip({{ $order->id }})" class="rounded-full bg-warning px-4 py-2 text-[9px] font-black uppercase tracking-wider text-charcoal ease-premium hover:bg-charcoal hover:text-cream">Mulai Perjalanan</button>
+                                @elseif ($order->order_status === 'on_the_way')
+                                    <div x-data="{
+                                        loading: false,
+                                        start() {
+                                            this.loading = true;
+                                            navigator.geolocation.getCurrentPosition(
+                                                (position) => {
+                                                    $wire.startWork({{ $order->id }}, position.coords.latitude, position.coords.longitude).then(() => {
+                                                        this.loading = false;
+                                                    });
+                                                },
+                                                (error) => {
+                                                    this.loading = false;
+                                                    alert('Gagal mengambil GPS. Izinkan lokasi di browser Anda.');
+                                                }
+                                            );
+                                        }
+                                    }">
+                                        <button @click="start()" :disabled="loading" class="rounded-full bg-mint px-4 py-2 text-[9px] font-black uppercase tracking-wider text-charcoal ease-premium hover:bg-charcoal hover:text-cream disabled:opacity-50">
+                                            <span x-show="!loading">Mulai Bekerja</span>
+                                            <span x-show="loading">Cek GPS...</span>
+                                        </button>
+                                    </div>
+                                @elseif ($order->order_status === 'working')
+                                    <button wire:click="completeOrder({{ $order->id }})" class="rounded-full bg-charcoal px-4 py-2 text-[9px] font-black uppercase tracking-wider text-cream ease-premium hover:bg-mint hover:text-charcoal">Selesai Kerja</button>
+                                @else
+                                    -
+                                @endif
+                            @endif
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" class="p-8 text-center text-xs font-bold text-charcoal/40">Tidak ada tugas ditemukan.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-6">
+        {{ $orders->links() }}
     </div>
 </div>
