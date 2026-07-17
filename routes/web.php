@@ -1,20 +1,23 @@
 <?php
 
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ServiceController;
-use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\ReviewController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\SocialiteController;
-use App\Http\Controllers\Pekerja;
-use App\Http\Controllers\Admin;
+use App\Livewire\HomePage;
+use App\Livewire\ServiceList;
+use App\Livewire\ServiceDetail;
+use App\Livewire\Orders\CreateOrder;
+use App\Livewire\Orders\OrderConfirm;
+use App\Livewire\Orders\OrderReceipt;
+use App\Livewire\Orders\OrderHistory;
+use App\Livewire\Profile\ProfileEdit;
+use App\Livewire\Admin;
+use App\Livewire\Pekerja;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
-Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
-Route::get('/services/{service:slug}', [ServiceController::class, 'show'])->name('services.show');
+Route::get('/', HomePage::class)->name('home');
+Route::get('/services', ServiceList::class)->name('services.index');
+Route::get('/services/{service:slug}', ServiceDetail::class)->name('services.show');
 
 // Google OAuth
 Route::get('/auth/google', [SocialiteController::class, 'redirect'])->name('auth.google');
@@ -28,22 +31,13 @@ Route::post('/midtrans/webhook', [PaymentController::class, 'handleWebhook'])
 // Authenticated customer routes
 Route::middleware(['auth'])->group(function () {
     // Orders
-    Route::get('/orders/create/{service:slug}', [OrderController::class, 'create'])->name('orders.create');
-    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
-    Route::get('/orders/{order}/confirm', [OrderController::class, 'confirm'])->name('orders.confirm');
-    Route::get('/orders/{order}/receipt', [OrderController::class, 'receipt'])->name('orders.receipt');
-    Route::get('/orders/history', [OrderController::class, 'history'])->name('orders.history');
+    Route::get('/orders/create/{service:slug}', CreateOrder::class)->name('orders.create');
+    Route::get('/orders/{order}/confirm', OrderConfirm::class)->name('orders.confirm');
+    Route::get('/orders/{order}/receipt', OrderReceipt::class)->name('orders.receipt');
+    Route::get('/orders/history', OrderHistory::class)->name('orders.history');
 
-    // Payment
-    Route::post('/payment/{order}/snap-token', [PaymentController::class, 'getSnapToken'])->name('payment.snap-token');
-
-    // Reviews
-    Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
-
-    // Profile (Breeze)
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    // Profile
+    Route::get('/profile', ProfileEdit::class)->name('profile.edit');
 });
 
 // Dashboard redirect
@@ -56,21 +50,17 @@ Route::get('/dashboard', function () {
 
 // Pekerja (Worker) Dashboard
 Route::middleware(['auth', 'role:pekerja'])->prefix('pekerja')->name('pekerja.')->group(function () {
-    Route::get('/dashboard', [Pekerja\DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/orders', [Pekerja\OrderController::class, 'index'])->name('orders.index');
-    Route::put('/orders/{order}/complete', [Pekerja\OrderController::class, 'complete'])->name('orders.complete');
-    Route::get('/customers', [Pekerja\CustomerController::class, 'index'])->name('customers.index');
-    Route::get('/customers/{user}', [Pekerja\CustomerController::class, 'show'])->name('customers.show');
+    Route::get('/dashboard', Pekerja\Dashboard::class)->name('dashboard');
+    Route::get('/orders', Pekerja\OrderList::class)->name('orders.index');
+    Route::get('/customers', Pekerja\CustomerList::class)->name('customers.index');
 });
 
 // Admin Dashboard
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', [Admin\DashboardController::class, 'index'])->name('dashboard');
-    Route::resource('/services', Admin\ServiceController::class)->except(['show']);
-    Route::get('/users', [Admin\UserController::class, 'index'])->name('users.index');
-    Route::get('/users/{user}', [Admin\UserController::class, 'show'])->name('users.show');
-    Route::get('/orders', [Admin\OrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/{order}', [Admin\OrderController::class, 'show'])->name('orders.show');
+    Route::get('/dashboard', Admin\Dashboard::class)->name('dashboard');
+    Route::get('/services', Admin\ServiceManager::class)->name('services.index');
+    Route::get('/users', Admin\UserManager::class)->name('users.index');
+    Route::get('/orders', Admin\OrderManager::class)->name('orders.index');
 });
 
 require __DIR__.'/auth.php';

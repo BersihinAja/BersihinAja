@@ -1,139 +1,193 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="bersihinaja">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ $title ?? 'Dashboard' }} — Pekerja | {{ config('app.name', 'BersihinAja') }}</title>
+    <title>{{ $title ?? 'Dashboard' }} — Pekerja | {{ config('app.name', 'BersihinAja') }}</title>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="font-sans antialiased bg-base-200 min-h-screen">
-        <div class="drawer lg:drawer-open">
-            <input id="pekerja-drawer" type="checkbox" class="drawer-toggle" />
+    <!-- Scripts -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-            <!-- Main Content -->
-            <div class="drawer-content flex flex-col">
-                <!-- Top bar (mobile) -->
-                <div class="navbar bg-base-100 shadow-sm lg:hidden">
-                    <div class="flex-none">
-                        <label for="pekerja-drawer" class="btn btn-square btn-ghost drawer-button">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                            </svg>
-                        </label>
-                    </div>
-                    <div class="flex-1">
-                        <span class="text-lg font-bold">BersihinAja</span>
-                    </div>
-                    <div class="flex-none">
-                        <div class="badge badge-sm {{ Auth::user()->status === 'available' ? 'badge-success' : 'badge-warning' }}">
-                            {{ ucfirst(Auth::user()->status ?? 'available') }}
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Page Content -->
-                <main class="flex-1 p-4 lg:p-8">
-                    <!-- Flash Messages -->
-                    @if(session('success'))
-                        <div class="alert alert-success mb-6 shadow-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span>{{ session('success') }}</span>
-                        </div>
-                    @endif
-
-                    @if(session('error'))
-                        <div class="alert alert-error mb-6 shadow-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span>{{ session('error') }}</span>
-                        </div>
-                    @endif
-
-                    {{ $slot }}
-                </main>
+    <style>
+        html { scroll-behavior: smooth; }
+        .ease-premium { transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal { opacity: 0; transform: translateY(20px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body class="bg-cream font-sans text-charcoal antialiased">
+    <div class="flex min-h-screen" x-data="{ mobileOpen: false }">
+        <!-- Sidebar - Desktop (Fixed) -->
+        <aside class="hidden w-72 flex-col bg-charcoal text-cream lg:flex fixed inset-y-0 left-0 z-40 border-r border-cream/5">
+            <!-- Brand -->
+            <div class="flex h-20 items-center px-8 border-b border-cream/5">
+                <a href="{{ route('pekerja.dashboard') }}" class="flex items-center gap-2 text-lg font-black tracking-tighter">
+                    <img src="{{ asset('images/logo.svg') }}" alt="BersihinAja" class="h-7 w-7"> BERSIHINAJA
+                </a>
             </div>
 
-            <!-- Sidebar -->
-            <div class="drawer-side z-40">
-                <label for="pekerja-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-                <aside class="bg-base-100 w-72 min-h-full flex flex-col border-r border-base-300">
-                    <!-- Sidebar Header -->
-                    <div class="p-6 border-b border-base-300">
-                        <a href="{{ route('pekerja.dashboard') }}" class="flex items-center gap-3">
-                            <div class="avatar placeholder">
-                                <div class="bg-primary text-primary-content rounded-full w-10">
-                                    <span class="text-lg font-bold">{{ substr(Auth::user()->name, 0, 1) }}</span>
-                                </div>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="font-semibold text-base-content truncate">{{ Auth::user()->name }}</p>
-                                <div class="badge badge-sm mt-1 {{ Auth::user()->status === 'available' ? 'badge-success' : 'badge-warning' }}">
-                                    {{ ucfirst(Auth::user()->status ?? 'available') }}
-                                </div>
-                            </div>
+            <!-- Profile Info -->
+            <div class="p-6 border-b border-cream/5 flex items-center gap-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-mint text-charcoal font-black">
+                    {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="font-bold text-sm truncate text-cream">{{ Auth::user()->name }}</p>
+                    @php
+                        $statusClass = Auth::user()->status === 'available' ? 'bg-[#36D399]/10 text-[#36D399]' : 'bg-[#FBBD23]/10 text-[#FBBD23]';
+                    @endphp
+                    <span class="inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-black tracking-wider {{ $statusClass }} mt-1">
+                        {{ strtoupper(Auth::user()->status ?? 'AVAILABLE') }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Nav Links -->
+            <nav class="flex-1 p-6 space-y-2 text-[10px] font-black tracking-[0.2em]">
+                <a href="{{ route('pekerja.dashboard') }}" wire:navigate 
+                   class="flex items-center gap-4 rounded-xl px-4 py-3.5 ease-premium {{ request()->routeIs('pekerja.dashboard') ? 'bg-mint text-charcoal' : 'text-cream/50 hover:bg-cream/5 hover:text-cream' }}">
+                    <iconify-icon icon="lucide:layout-dashboard" class="text-base"></iconify-icon> DASHBOARD
+                </a>
+                <a href="{{ route('pekerja.orders.index') }}" wire:navigate 
+                   class="flex items-center gap-4 rounded-xl px-4 py-3.5 ease-premium {{ request()->routeIs('pekerja.orders.*') ? 'bg-mint text-charcoal' : 'text-cream/50 hover:bg-cream/5 hover:text-cream' }}">
+                    <iconify-icon icon="lucide:clipboard-list" class="text-base"></iconify-icon> PESANAN SAYA
+                </a>
+                <a href="{{ route('pekerja.customers.index') }}" wire:navigate 
+                   class="flex items-center gap-4 rounded-xl px-4 py-3.5 ease-premium {{ request()->routeIs('pekerja.customers.*') ? 'bg-mint text-charcoal' : 'text-cream/50 hover:bg-cream/5 hover:text-cream' }}">
+                    <iconify-icon icon="lucide:users" class="text-base"></iconify-icon> PELANGGAN
+                </a>
+            </nav>
+
+            <!-- Footer / Logout -->
+            <div class="p-6 border-t border-cream/5">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-[10px] font-black tracking-[0.2em] text-[#F87272] ease-premium hover:bg-[#F87272]/5">
+                        <iconify-icon icon="lucide:log-out" class="text-base"></iconify-icon> KELUAR
+                    </button>
+                </form>
+            </div>
+        </aside>
+
+        <!-- Sidebar - Mobile (Slide-over) -->
+        <div x-show="mobileOpen" class="relative z-50 lg:hidden" role="dialog" aria-modal="true">
+            <div x-show="mobileOpen" x-transition:enter="transition-opacity ease-linear duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition-opacity ease-linear duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-charcoal/80"></div>
+            <div class="fixed inset-0 flex">
+                <div x-show="mobileOpen" x-transition:enter="transition ease-in-out duration-300 transform" x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0" x-transition:leave="transition ease-in-out duration-300 transform" x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full" class="relative flex w-full max-w-xs flex-1 flex-col bg-charcoal text-cream" @click.outside="mobileOpen = false">
+                    <!-- Close button -->
+                    <div class="absolute right-4 top-4">
+                        <button @click="mobileOpen = false" class="text-cream/50 hover:text-cream">
+                            <iconify-icon icon="lucide:x" class="text-2xl"></iconify-icon>
+                        </button>
+                    </div>
+
+                    <!-- Brand -->
+                    <div class="flex h-20 items-center px-8 border-b border-cream/5">
+                        <a href="{{ route('pekerja.dashboard') }}" class="flex items-center gap-2 text-lg font-black tracking-tighter">
+                            <img src="{{ asset('images/logo.svg') }}" alt="BersihinAja" class="h-7 w-7"> BERSIHINAJA
                         </a>
                     </div>
 
-                    <!-- Navigation -->
-                    <nav class="flex-1 p-4">
-                        <ul class="menu gap-1">
-                            <li>
-                                <a href="{{ route('pekerja.dashboard') }}"
-                                   class="{{ request()->routeIs('pekerja.dashboard') ? 'active' : '' }}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                                    </svg>
-                                    Dashboard
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('pekerja.orders.index') }}"
-                                   class="{{ request()->routeIs('pekerja.orders.*') ? 'active' : '' }}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                                    </svg>
-                                    Pesanan Saya
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('pekerja.customers.index') }}"
-                                   class="{{ request()->routeIs('pekerja.customers.*') ? 'active' : '' }}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                                    </svg>
-                                    Pelanggan
-                                </a>
-                            </li>
-                        </ul>
+                    <!-- Profile Info -->
+                    <div class="p-6 border-b border-cream/5 flex items-center gap-3">
+                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-mint text-charcoal font-black">
+                            {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-bold text-sm truncate text-cream">{{ Auth::user()->name }}</p>
+                            <span class="inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-black tracking-wider {{ $statusClass }} mt-1">
+                                {{ strtoupper(Auth::user()->status ?? 'AVAILABLE') }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Nav Links -->
+                    <nav class="flex-1 p-6 space-y-2 text-[10px] font-black tracking-[0.2em]">
+                        <a href="{{ route('pekerja.dashboard') }}" wire:navigate @click="mobileOpen = false"
+                           class="flex items-center gap-4 rounded-xl px-4 py-3.5 ease-premium {{ request()->routeIs('pekerja.dashboard') ? 'bg-mint text-charcoal' : 'text-cream/50 hover:bg-cream/5 hover:text-cream' }}">
+                            <iconify-icon icon="lucide:layout-dashboard" class="text-base"></iconify-icon> DASHBOARD
+                        </a>
+                        <a href="{{ route('pekerja.orders.index') }}" wire:navigate @click="mobileOpen = false"
+                           class="flex items-center gap-4 rounded-xl px-4 py-3.5 ease-premium {{ request()->routeIs('pekerja.orders.*') ? 'bg-mint text-charcoal' : 'text-cream/50 hover:bg-cream/5 hover:text-cream' }}">
+                            <iconify-icon icon="lucide:clipboard-list" class="text-base"></iconify-icon> PESANAN SAYA
+                        </a>
+                        <a href="{{ route('pekerja.customers.index') }}" wire:navigate @click="mobileOpen = false"
+                           class="flex items-center gap-4 rounded-xl px-4 py-3.5 ease-premium {{ request()->routeIs('pekerja.customers.*') ? 'bg-mint text-charcoal' : 'text-cream/50 hover:bg-cream/5 hover:text-cream' }}">
+                            <iconify-icon icon="lucide:users" class="text-base"></iconify-icon> PELANGGAN
+                        </a>
                     </nav>
 
-                    <!-- Sidebar Footer -->
-                    <div class="p-4 border-t border-base-300">
+                    <!-- Footer / Logout -->
+                    <div class="p-6 border-t border-cream/5">
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button type="submit" class="btn btn-ghost btn-block justify-start gap-3 text-error">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                                </svg>
-                                Keluar
+                            <button type="submit" class="flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-[10px] font-black tracking-[0.2em] text-[#F87272] ease-premium hover:bg-[#F87272]/5">
+                                <iconify-icon icon="lucide:log-out" class="text-base"></iconify-icon> KELUAR
                             </button>
                         </form>
                     </div>
-                </aside>
+                </div>
             </div>
         </div>
 
-        @stack('scripts')
-    </body>
+        <!-- Main Wrapper -->
+        <div class="flex-1 flex flex-col lg:pl-72 min-h-screen">
+            <!-- Mobile Header Top Bar -->
+            <header class="flex h-20 items-center justify-between border-b border-charcoal/5 bg-cream px-6 lg:hidden sticky top-0 z-30">
+                <button @click="mobileOpen = true" class="text-charcoal hover:text-mint ease-premium">
+                    <iconify-icon icon="lucide:menu" class="text-2xl"></iconify-icon>
+                </button>
+                <a href="{{ route('pekerja.dashboard') }}" class="flex items-center gap-2 text-lg font-black tracking-tighter">
+                    <img src="{{ asset('images/logo.svg') }}" alt="BersihinAja" class="h-7 w-7"> BERSIHINAJA
+                </a>
+                <span class="inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-black tracking-wider {{ $statusClass }}">
+                    {{ strtoupper(Auth::user()->status ?? 'AVAILABLE') }}
+                </span>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="flex-1 p-6 lg:p-12">
+                <!-- Flash Messages -->
+                @if(session('success'))
+                    <div class="mb-6 flex items-center gap-3 rounded-2xl bg-mint/10 px-6 py-4 reveal active">
+                        <iconify-icon icon="lucide:check-circle" class="text-xl text-mint"></iconify-icon>
+                        <span class="text-sm font-bold text-charcoal">{{ session('success') }}</span>
+                    </div>
+                @endif
+
+                @if(session('error'))
+                    <div class="mb-6 flex items-center gap-3 rounded-2xl bg-[#F87272]/10 px-6 py-4 reveal active">
+                        <iconify-icon icon="lucide:alert-circle" class="text-xl text-[#F87272]"></iconify-icon>
+                        <span class="text-sm font-bold text-[#F87272]">{{ session('error') }}</span>
+                    </div>
+                @endif
+
+                {{ $slot }}
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('livewire:navigated', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+        });
+    </script>
+    @stack('scripts')
+</body>
 </html>

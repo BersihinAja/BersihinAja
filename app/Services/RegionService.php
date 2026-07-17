@@ -12,17 +12,22 @@ class RegionService
 
     public function getProvinces(): Collection
     {
-        return Cache::remember('provinces', now()->addHours(24), function () {
+        $data = Cache::remember('provinces', now()->addHours(24), function () {
             $response = Http::get("{$this->baseUrl}/provinces.json");
-            return collect($response->json());
+            return $response->json(); // store plain array, not Collection
         });
+
+        return collect($data);
     }
 
     public function getRegencies(string $provinceId): Collection
     {
-        return Cache::remember("regencies_{$provinceId}", now()->addHours(24), function () use ($provinceId) {
+        $data = Cache::remember("regencies_{$provinceId}", now()->addHours(24), function () use ($provinceId) {
             $response = Http::get("{$this->baseUrl}/regencies/{$provinceId}.json");
-            return collect($response->json());
+            return $response->json(); // store plain array, not Collection
         });
+
+        return collect($data);
     }
 }
+
