@@ -110,12 +110,62 @@
             @endif
 
             {{-- Address --}}
-            <div class="rounded-3xl bg-cream-alt p-8 reveal active">
-                <h2 class="text-xl font-black tracking-tighter text-charcoal flex items-center gap-2">
-                    <iconify-icon icon="lucide:map-pin" class="text-mint"></iconify-icon> Alamat Lengkap
-                </h2>
+            <div class="rounded-3xl bg-cream-alt p-8 reveal active" x-data="{
+                loading: false,
+                successMessage: '',
+                errorMessage: '',
+                getCoordinates() {
+                    this.loading = true;
+                    this.errorMessage = '';
+                    this.successMessage = '';
+                    if (!navigator.geolocation) {
+                        this.errorMessage = 'Geolocation tidak didukung oleh browser Anda.';
+                        this.loading = false;
+                        return;
+                    }
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            @this.set('form.latitude', position.coords.latitude);
+                            @this.set('form.longitude', position.coords.longitude);
+                            this.successMessage = 'Lokasi GPS berhasil didapatkan! (' + position.coords.latitude.toFixed(6) + ', ' + position.coords.longitude.toFixed(6) + ')';
+                            this.loading = false;
+                        },
+                        (error) => {
+                            this.errorMessage = 'Gagal mendapatkan lokasi. Pastikan izin lokasi aktif.';
+                            this.loading = false;
+                        },
+                        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+                    );
+                }
+            }">
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <h2 class="text-xl font-black tracking-tighter text-charcoal flex items-center gap-2">
+                        <iconify-icon icon="lucide:map-pin" class="text-mint"></iconify-icon> Alamat Lengkap
+                    </h2>
+                    <button type="button" @click="getCoordinates()" class="inline-flex items-center gap-1.5 rounded-full border border-charcoal/10 bg-cream px-4 py-2 text-[10px] font-black uppercase tracking-wider text-charcoal ease-premium hover:border-mint hover:bg-cream-alt">
+                        <template x-if="!loading">
+                            <iconify-icon icon="lucide:navigation" class="text-xs text-mint"></iconify-icon>
+                        </template>
+                        <template x-if="loading">
+                            <iconify-icon icon="lucide:loader" class="animate-spin text-xs text-mint"></iconify-icon>
+                        </template>
+                        <span x-text="loading ? 'Mencari...' : 'Gunakan Koordinat GPS'"></span>
+                    </button>
+                </div>
                 <textarea wire:model="form.address" class="mt-4 w-full rounded-2xl border border-charcoal/10 bg-cream px-5 py-4 text-sm font-bold text-charcoal outline-none ease-premium focus:border-mint focus:ring-2 focus:ring-mint/20" rows="3" placeholder="Masukkan alamat lengkap Anda (minimal 10 karakter)..." required minlength="10"></textarea>
                 <x-input-error :messages="$errors->get('form.address')" class="mt-2" />
+                
+                {{-- Success / Error message indicator --}}
+                <div x-show="successMessage" class="mt-3 text-[10px] font-bold text-mint flex items-center gap-1.5" x-cloak style="display: none;">
+                    <iconify-icon icon="lucide:check-circle"></iconify-icon> <span x-text="successMessage"></span>
+                </div>
+                <div x-show="errorMessage" class="mt-3 text-[10px] font-bold text-[#F87272] flex items-center gap-1.5" x-cloak style="display: none;">
+                    <iconify-icon icon="lucide:alert-circle"></iconify-icon> <span x-text="errorMessage"></span>
+                </div>
+                
+                {{-- Hidden fields for coordinate values --}}
+                <input type="hidden" wire:model="form.latitude">
+                <input type="hidden" wire:model="form.longitude">
             </div>
 
             {{-- Total & Submit --}}

@@ -20,4 +20,10 @@ class OrderForm extends Form
 
     #[Validate('required|string')]
     public $regency_name = '';
+
+    #[Validate('nullable|numeric')]
+    public $latitude = '';
+
+    #[Validate('nullable|numeric')]
+    public $longitude = '';
 }

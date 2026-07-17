@@ -40,10 +40,23 @@
                                 <td class="py-4 font-mono font-bold text-charcoal">{{ $order->order_number }}</td>
                                 <td class="py-4">
                                     <div class="flex items-center gap-2">
-                                        <div class="flex h-6 w-6 items-center justify-center rounded-full bg-mint/10 text-[9px] font-black text-mint">
+                                        <div class="flex h-6 w-6 items-center justify-center rounded-full bg-mint/10 text-[9px] font-black text-mint shrink-0">
                                             {{ strtoupper(substr($order->customer->name ?? '?', 0, 1)) }}
                                         </div>
-                                        <span class="font-bold text-charcoal/70">{{ $order->customer->name ?? '-' }}</span>
+                                        <div class="min-w-0">
+                                            <p class="font-bold text-charcoal/70 truncate">{{ $order->customer->name ?? '-' }}</p>
+                                            <div class="flex items-center gap-1.5 mt-0.5">
+                                                <span class="text-[9px] text-charcoal/40 truncate max-w-[150px]" title="{{ $order->address }}, {{ $order->regency_name }}">{{ $order->address }}</span>
+                                                @php
+                                                    $mapsUrl = ($order->latitude && $order->longitude)
+                                                        ? "https://www.google.com/maps/search/?api=1&query={$order->latitude},{$order->longitude}"
+                                                        : "https://www.google.com/maps/search/?api=1&query=" . urlencode($order->address . ', ' . $order->regency_name);
+                                                @endphp
+                                                <a href="{{ $mapsUrl }}" target="_blank" class="inline-flex items-center gap-0.5 text-[8px] font-black uppercase text-mint hover:underline shrink-0">
+                                                    <iconify-icon icon="lucide:navigation" class="text-[10px]"></iconify-icon> Peta
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </td>
                                 <td class="py-4 font-bold text-charcoal/70">{{ $order->service->name ?? '-' }}</td>

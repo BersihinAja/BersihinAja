@@ -157,8 +157,18 @@
                     @endif
 
                     {{-- Address --}}
-                    <div class="flex flex-col gap-1">
-                        <span class="font-black text-charcoal/40 uppercase tracking-wider">ALAMAT</span>
+                    <div class="flex flex-col gap-2">
+                        <div class="flex items-center justify-between">
+                            <span class="font-black text-charcoal/40 uppercase tracking-wider">ALAMAT</span>
+                            @php
+                                $mapsUrl = ($selectedOrder->latitude && $selectedOrder->longitude)
+                                    ? "https://www.google.com/maps/search/?api=1&query={$selectedOrder->latitude},{$selectedOrder->longitude}"
+                                    : "https://www.google.com/maps/search/?api=1&query=" . urlencode($selectedOrder->address . ', ' . $selectedOrder->regency_name);
+                            @endphp
+                            <a href="{{ $mapsUrl }}" target="_blank" class="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-wider text-mint border-b border-mint/20 pb-0.5 ease-premium hover:border-mint">
+                                <iconify-icon icon="lucide:map" class="text-xs"></iconify-icon> Google Maps
+                            </a>
+                        </div>
                         <span class="font-medium text-charcoal/70 bg-cream p-3 rounded-xl leading-relaxed">{{ $selectedOrder->address }}, {{ $selectedOrder->regency_name }}</span>
                     </div>
 

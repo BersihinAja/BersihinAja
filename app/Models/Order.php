@@ -17,12 +17,15 @@ class Order extends Model
         'order_number', 'customer_id', 'service_id', 'total',
         'address', 'regency_name', 'payment_status', 'order_status',
         'midtrans_order_id', 'midtrans_snap_token', 'paid_at', 'expires_at',
+        'latitude', 'longitude',
     ];
 
     protected $casts = [
         'total' => 'decimal:2',
         'paid_at' => 'datetime',
         'expires_at' => 'datetime',
+        'latitude' => 'float',
+        'longitude' => 'float',
     ];
 
     public function customer(): BelongsTo

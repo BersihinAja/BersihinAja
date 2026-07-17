@@ -29,6 +29,8 @@ class OrderService
             'payment_status' => 'unpaid',
             'order_status' => 'pending',
             'expires_at' => now()->addMinutes(3),
+            'latitude' => $data['latitude'] ?? null,
+            'longitude' => $data['longitude'] ?? null,
         ]);
 
         // Attach workers
