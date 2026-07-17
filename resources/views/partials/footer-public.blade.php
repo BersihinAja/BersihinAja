@@ -3,7 +3,7 @@
         <div class="grid gap-12 lg:grid-cols-12">
             <div class="lg:col-span-5">
                 <a href="{{ route('home') }}" class="flex items-center gap-2 text-2xl font-black tracking-tighter">
-                    <iconify-icon icon="lucide:sparkles" class="text-mint"></iconify-icon>BERSIHINAJA
+                    <img src="{{ asset('images/logo.svg') }}" alt="" class="h-5 w-5">BERSIHINAJA
                 </a>
                 <p class="mt-5 max-w-xs text-lg font-medium leading-relaxed text-charcoal/60">Platform layanan kebersihan rumah terpercaya di Indonesia.</p>
             </div>

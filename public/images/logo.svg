@@ -1,0 +1,11 @@
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Leaf + Droplet unified mark -->
+  <!-- Main leaf/droplet shape -->
+  <path d="M20 4C20 4 8 16 8 24C8 30.627 13.373 36 20 36C26.627 36 32 30.627 32 24C32 16 20 4 20 4Z" fill="#37CDBE"/>
+  <!-- Inner leaf vein -->
+  <path d="M20 12V30" stroke="#FAFCFB" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+  <path d="M20 18C17 20 14.5 23 14 26" stroke="#FAFCFB" stroke-width="1.2" stroke-linecap="round" opacity="0.4"/>
+  <path d="M20 18C23 20 25.5 23 26 26" stroke="#FAFCFB" stroke-width="1.2" stroke-linecap="round" opacity="0.4"/>
+  <!-- Small leaf accent at top -->
+  <path d="M20 8C22 10 24 9 25 7C23 7 21 7 20 8Z" fill="#FAFCFB" opacity="0.5"/>
+</svg>

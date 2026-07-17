@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'BersihinAja') }}</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,7 +26,7 @@
             <div class="absolute inset-0 bg-gradient-to-br from-charcoal via-charcoal to-mint/20"></div>
             <div class="relative z-10 px-16 text-center">
                 <a href="{{ route('home') }}" class="flex items-center justify-center gap-3 text-3xl font-black tracking-tighter text-cream">
-                    <iconify-icon icon="lucide:sparkles" class="text-4xl text-mint"></iconify-icon>
+                    <img src="{{ asset('images/logo.svg') }}" alt="BersihinAja" class="h-10 w-10">
                     BERSIHINAJA
                 </a>
                 <p class="mt-6 max-w-sm mx-auto text-lg font-medium leading-relaxed text-cream/60">
@@ -56,7 +57,7 @@
                 {{-- Mobile Logo --}}
                 <div class="mb-10 lg:hidden">
                     <a href="{{ route('home') }}" class="flex items-center gap-2 text-xl font-black tracking-tighter text-charcoal">
-                        <iconify-icon icon="lucide:sparkles" class="text-2xl text-mint"></iconify-icon>
+                        <img src="{{ asset('images/logo.svg') }}" alt="BersihinAja" class="h-7 w-7">
                         BERSIHINAJA
                     </a>
                 </div>
