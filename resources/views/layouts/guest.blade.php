@@ -1,30 +1,69 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ config('app.name', 'BersihinAja') }}</title>
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900">
-            <div>
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
+    <style>
+        html { scroll-behavior: smooth; }
+        .ease-premium { transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
+    </style>
+</head>
+<body class="font-sans antialiased">
+    <div class="flex min-h-screen">
+        {{-- Left: Decorative Panel --}}
+        <div class="hidden lg:flex lg:w-1/2 bg-charcoal relative items-center justify-center overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-charcoal via-charcoal to-mint/20"></div>
+            <div class="relative z-10 px-16 text-center">
+                <a href="{{ route('home') }}" class="flex items-center justify-center gap-3 text-3xl font-black tracking-tighter text-cream">
+                    <iconify-icon icon="lucide:sparkles" class="text-4xl text-mint"></iconify-icon>
+                    BERSIHINAJA
                 </a>
+                <p class="mt-6 max-w-sm mx-auto text-lg font-medium leading-relaxed text-cream/60">
+                    Rumah Bersih, Hidup Nyaman. Platform layanan kebersihan rumah terpercaya di Indonesia.
+                </p>
+                <div class="mt-12 flex items-center justify-center gap-8 text-cream/30">
+                    <div class="text-center">
+                        <p class="text-3xl font-black text-mint">3</p>
+                        <p class="mt-1 text-[10px] font-black tracking-[0.2em]">PAKET</p>
+                    </div>
+                    <div class="h-8 w-px bg-cream/10"></div>
+                    <div class="text-center">
+                        <p class="text-3xl font-black text-mint">24/7</p>
+                        <p class="mt-1 text-[10px] font-black tracking-[0.2em]">LAYANAN</p>
+                    </div>
+                    <div class="h-8 w-px bg-cream/10"></div>
+                    <div class="text-center">
+                        <p class="text-3xl font-black text-mint">100%</p>
+                        <p class="mt-1 text-[10px] font-black tracking-[0.2em]">AMAN</p>
+                    </div>
+                </div>
             </div>
+        </div>
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg">
+        {{-- Right: Auth Form --}}
+        <div class="flex w-full flex-col justify-center px-6 py-12 bg-cream lg:w-1/2 lg:px-16">
+            <div class="mx-auto w-full max-w-md">
+                {{-- Mobile Logo --}}
+                <div class="mb-10 lg:hidden">
+                    <a href="{{ route('home') }}" class="flex items-center gap-2 text-xl font-black tracking-tighter text-charcoal">
+                        <iconify-icon icon="lucide:sparkles" class="text-2xl text-mint"></iconify-icon>
+                        BERSIHINAJA
+                    </a>
+                </div>
+
                 {{ $slot }}
             </div>
         </div>
-    </body>
+    </div>
+</body>
 </html>
