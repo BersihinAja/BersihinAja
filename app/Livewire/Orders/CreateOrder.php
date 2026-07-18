@@ -84,8 +84,8 @@ class CreateOrder extends Component
             'package_ids' => $this->form->package_ids,
             'address' => $this->form->address,
             'regency_name' => $this->form->regency_name,
-            'latitude' => $this->form->latitude,
-            'longitude' => $this->form->longitude,
+            'latitude' => $this->form->latitude ?: null,
+            'longitude' => $this->form->longitude ?: null,
         ]);
 
         return redirect()->route('orders.confirm', $order);

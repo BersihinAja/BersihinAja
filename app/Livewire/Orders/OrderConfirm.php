@@ -22,6 +22,21 @@ class OrderConfirm extends Component
         $this->dispatch('pay-order', snapToken: $snapToken);
     }
 
+    public function simulatePaymentSuccess()
+    {
+        $this->order->update([
+            'payment_status' => 'paid',
+            'order_status' => 'pending',
+            'paid_at' => now(),
+        ]);
+
+        foreach ($this->order->workers as $worker) {
+            $worker->update(['status' => 'working']);
+        }
+
+        return redirect()->route('orders.receipt', $this->order->id);
+    }
+
     public function render()
     {
         return view('livewire.orders.order-confirm')

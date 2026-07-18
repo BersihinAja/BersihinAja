@@ -111,6 +111,49 @@
         document.addEventListener('livewire:init', () => {
             Livewire.on('pay-order', (event) => {
                 const snapToken = event.snapToken;
+                if (snapToken.startsWith('mock-')) {
+                    // Show a gorgeous mock payment modal overlay
+                    const overlay = document.createElement('div');
+                    overlay.id = 'mock-payment-overlay';
+                    overlay.className = 'fixed inset-0 z-50 flex items-center justify-center bg-charcoal/60 backdrop-blur-sm p-4';
+                    overlay.innerHTML = `
+                        <div class="relative w-full max-w-md rounded-3xl bg-cream p-8 shadow-2xl border border-charcoal/5 animate-in fade-in zoom-in duration-200">
+                            <div class="flex items-center justify-between border-b border-charcoal/5 pb-4">
+                                <div class="flex items-center gap-2">
+                                    <img src="/images/logo.svg" class="h-6 w-6">
+                                    <span class="font-black text-xs tracking-wider text-charcoal">MIDTRANS SIMULATOR</span>
+                                </div>
+                                <span class="rounded bg-mint/10 px-2.5 py-0.5 text-[8px] font-black tracking-wider uppercase text-mint">SANDBOX DEMO</span>
+                            </div>
+                            <div class="mt-6 text-center">
+                                <p class="text-[10px] font-black tracking-widest text-charcoal/40 uppercase">NOMOR TAGIHAN</p>
+                                <p class="text-xs font-mono font-bold text-charcoal mt-1">${snapToken}</p>
+                                <h3 class="text-3xl font-black text-charcoal mt-4">Rp {{ number_format($order->total, 0, ',', '.') }}</h3>
+                                <p class="text-[10px] font-medium text-charcoal/50 mt-1">Pilih simulasi pembayaran di bawah ini:</p>
+                            </div>
+                            <div class="mt-6 space-y-3">
+                                <button id="btn-simulate-success" class="w-full rounded-2xl bg-mint px-5 py-4 text-xs font-black uppercase tracking-wider text-charcoal ease-premium hover:bg-charcoal hover:text-cream flex items-center justify-center gap-2">
+                                    Simulasi Sukses (Bayar)
+                                </button>
+                                <button id="btn-simulate-cancel" class="w-full rounded-2xl bg-cream-alt border border-charcoal/5 px-5 py-4 text-xs font-black uppercase tracking-wider text-charcoal/60 ease-premium hover:bg-error/10 hover:text-error">
+                                    Batal / Cancel
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(overlay);
+
+                    document.getElementById('btn-simulate-success').addEventListener('click', () => {
+                        overlay.remove();
+                        @this.call('simulatePaymentSuccess');
+                    });
+
+                    document.getElementById('btn-simulate-cancel').addEventListener('click', () => {
+                        overlay.remove();
+                    });
+                    return;
+                }
+
                 window.snap.pay(snapToken, {
                     onSuccess: function(result) {
                         window.location.href = '{{ route('orders.receipt', $order->id) }}';

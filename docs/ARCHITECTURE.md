@@ -7,6 +7,7 @@
 
 ## Table of Contents
 
+- [System Showcase & UI Gallery](#system-showcase--ui-gallery)
 - [Tech Stack](#tech-stack)
 - [System Architecture](#system-architecture)
 - [Request Lifecycle (Livewire SPA)](#request-lifecycle-livewire-spa)
@@ -18,6 +19,32 @@
 - [Route Mappings](#route-mappings)
 - [Model Context Protocol (MCP) Integration](#model-context-protocol-mcp-integration)
 - [Setup & Installation](#setup--installation)
+
+---
+
+## System Showcase & UI Gallery
+
+Below are the key interfaces of the BersihinAja application, demonstrating multi-role capabilities, geolocation tracking, payment gateway integration, and responsive design systems.
+
+### 1. Landing Page (First Impression)
+A clean, premium modern interface showcasing available services with custom typography and real-time regional support availability checks.
+![Landing Page](screenshots/landing_page.png)
+
+### 2. Order Creation & Geolocation
+Shows regional service selection, distance check computation, live GPS coordinate pin drop on the map, worker list filtering, and price estimation calculations.
+![Order Creation](screenshots/order_creation.png)
+
+### 3. Midtrans Payment Gateway Integration
+Demonstrates full sandbox integration via the Midtrans Snap modal overlay. Supports secure transactions, checkout flow status hooks, and automated success redirection.
+![Midtrans Payment](screenshots/midtrans_payment.png)
+
+### 4. Worker Order Pool & Job Claims
+Presents the regional job pool where verified cleaners can view and claim available jobs located in their specific regency (Sleman in this case).
+![Pekerja Pool](screenshots/pekerja_pool.png)
+
+### 5. Administrator Dashboard
+A comprehensive dashboard displaying site-wide performance metrics, bento-style cards, pending/active worker KYC review workflows, and transactional histories.
+![Admin Dashboard](screenshots/admin_dashboard.png)
 
 ---
 

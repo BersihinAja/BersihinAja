@@ -22,6 +22,13 @@ class MidtransService
         $midtransOrderId = 'BA-' . $order->id . '-' . time();
         $order->update(['midtrans_order_id' => $midtransOrderId]);
 
+        $serverKey = config('midtrans.server_key');
+        if (str_contains($serverKey, 'xxxxxx') || empty($serverKey)) {
+            $snapToken = 'mock-snap-token-' . $order->id . '-' . time();
+            $order->update(['midtrans_snap_token' => $snapToken]);
+            return $snapToken;
+        }
+
         $params = [
             'transaction_details' => [
                 'order_id' => $midtransOrderId,
