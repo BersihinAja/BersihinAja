@@ -1,6 +1,6 @@
 <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
   <!-- House Roof (Charcoal) -->
-  <path d="M 9 26 L 20 15 L 31 26 M 12 25 V 31 M 28 25 V 31" stroke="#1D232A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <path d="M 9 23 L 20 12 L 31 23 M 12 22 V 28 M 28 22 V 28" stroke="#1D232A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
   <!-- Sparkle Star (Mint Green) -->
-  <path d="M 20 17.5 Q 20 23.5 26 23.5 Q 20 23.5 20 29.5 Q 20 23.5 14 23.5 Q 20 23.5 20 17.5 Z" fill="#37CDBE"/>
+  <path d="M 20 14.5 Q 20 20.5 26 20.5 Q 20 20.5 20 26.5 Q 20 20.5 14 20.5 Q 20 20.5 20 14.5 Z" fill="#37CDBE"/>
 </svg>
