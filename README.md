@@ -59,4 +59,4 @@ app/
 └── Mcp/               # Laravel MCP server
 ```
 
-Full documentation in [`docs/README.md`](docs/README.md).
+Full documentation in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).

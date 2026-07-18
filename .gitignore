@@ -27,6 +27,6 @@ Homestead.yaml
 Thumbs.db
 .superdesign/
 docs/*
-!docs/README.md
+!docs/ARCHITECTURE.md
 
 private/
