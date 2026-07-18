@@ -11,7 +11,12 @@ class UserManager extends Component
     use WithPagination;
 
     public string $search = '';
-    public string $tab = 'all'; // all, pending_workers, verified_workers
+    public string $tab = 'all'; // all, pending_workers, verified_workers, under_review
+    
+    // Rejection modal states
+    public bool $showRejectionModal = false;
+    public ?int $selectedUserId = null;
+    public string $rejectionReason = '';
 
     public function updatingSearch()
     {
@@ -29,18 +34,41 @@ class UserManager extends Component
             abort(403);
         }
 
-        $user->update(['status' => 'available']);
+        $user->update([
+            'status' => 'available',
+            'rejection_reason' => null
+        ]);
+        
         session()->flash('success', 'Akun pekerja ' . $user->name . ' berhasil diverifikasi!');
     }
 
-    public function rejectWorker(User $user)
+    public function openRejectionModal($userId)
     {
+        $this->selectedUserId = $userId;
+        $this->rejectionReason = '';
+        $this->showRejectionModal = true;
+    }
+
+    public function submitRejection()
+    {
+        $this->validate([
+            'rejectionReason' => ['required', 'string', 'min:5'],
+        ]);
+
+        $user = User::findOrFail($this->selectedUserId);
         if (!$user->hasRole('pekerja')) {
             abort(403);
         }
 
-        $user->delete();
-        session()->flash('success', 'Akun pekerja ' . $user->name . ' berhasil ditolak dan dihapus.');
+        $user->update([
+            'status' => 'rejected',
+            'rejection_reason' => $this->rejectionReason,
+        ]);
+
+        $this->showRejectionModal = false;
+        $this->selectedUserId = null;
+        
+        session()->flash('success', 'Berkas pendaftaran pekerja ditolak dengan alasan yang terlampir.');
     }
 
     public function render()
@@ -56,6 +84,8 @@ class UserManager extends Component
 
         if ($this->tab === 'pending_workers') {
             $query->role('pekerja')->where('status', 'pending_verification');
+        } elseif ($this->tab === 'under_review') {
+            $query->role('pekerja')->where('status', 'under_review');
         } elseif ($this->tab === 'verified_workers') {
             $query->role('pekerja')->where('status', 'available');
         }
